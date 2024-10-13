@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: samplejava
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: samplejava
+          image: ktdseduacr.azurecr.io/edu08/samplejava:v1.0.0
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "250m"
+          readinessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            httpGet:
+                path: /health
+                port: 8080
+                scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 3
+          livenessProbe:
+            failureThreshold: 3
+            successThreshold: 1
+            httpGet:
+                path: /health
+                port: 8080
+                scheme: HTTP
+            initialDelaySeconds: 20
