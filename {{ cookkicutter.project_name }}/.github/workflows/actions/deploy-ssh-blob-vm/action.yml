@@ -1,0 +1,40 @@
+name: 'Deploy SSH Blob VM'
+description: 'Deploys a Java application to a VM using SSH and Azure Blob Storage'
+inputs:
+  environment:
+    description: 'Deployment environment'
+    required: true
+  storage-account:
+    description: 'Azure storage account name'
+    required: true
+  storage-container:
+    description: 'Azure storage container name'
+    required: true
+  storage-access-key:
+    description: 'Azure storage access key'
+    required: true
+  ssh-private-key:
+    description: 'SSH private key for VM'
+    required: true
+  vm-ip:
+    description: 'IP address of the VM'
+    required: true
+  vm-user:
+    description: 'Username for VM SSH access'
+    required: true
+  app-name:
+    description: 'Name of the application jar file'
+    required: true
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.environment }}
+    - ${{ inputs.storage-account }}
+    - ${{ inputs.storage-container }}
+    - ${{ inputs.storage-access-key }}
+    - ${{ inputs.ssh-private-key }}
+    - ${{ inputs.vm-ip }}
+    - ${{ inputs.vm-user }}
+    - ${{ inputs.app-name }}

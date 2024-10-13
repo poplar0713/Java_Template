@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: {{ cookiecutter.k8s_namespace }}
+
+resources:
+- ../../base
+
+patches:
+- path: ./deployment-patch.yaml
+  target:
+    kind: Deployment
+- path: ./ingress-patch.yaml
+  target:
+    kind: Ingress
+
+images:
+- name: {{ cookkiecutter.acr_name }}.azurecr.io/{{ cookiecutter.package_name }}/
+  newName: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.package_name }}/{ cookiecutter.project_name }}
+  newTag: v20241010171128
+
