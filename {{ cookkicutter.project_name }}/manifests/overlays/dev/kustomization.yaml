@@ -15,7 +15,7 @@ patches:
     kind: Ingress
 
 images:
-- name: {{ cookkiecutter.acr_name }}.azurecr.io/{{ cookiecutter.package_name }}/
-  newName: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.package_name }}/{ cookiecutter.project_name }}
+- name: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.repository_name }}/{{ cookiecutter.image_name }}
+  newName: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.repository_name }}/{{ cookiecutter.image_name }}
   newTag: v20241010171128
 

@@ -1,20 +1,20 @@
 apiVersion : apps/v1
 kind: Deployment
 metadata:
-  name: {{ cookiecutter.project_name }}
+  name: {{ cookiecutter.image_name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ cookiecutter.project_name }}
+      app: {{ cookiecutter.image_name }}
   template:
     metadata:
       labels:
-        app: {{ cookiecutter.project_name }}
+        app: {{ cookiecutter.image_name }}
     spec:
       containers:
-        - name: {{ cookiecutter.project_name }}
-          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.package_name }}/{{ cookiecutter.project_name }}:v1.0.0
+        - name: {{ cookiecutter.image_name }}
+          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.reposiroty_name }}/{{ cookiecutter.image_name }}:v1.0.0
           ports:
             - containerPort: 8080
           resources:

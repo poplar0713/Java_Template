@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: samplejava-ingress
+  name: {{ cookiecutter.image_name }}-ingress
 spec:
   ingressClassName: nginx
   rules:
-  - host: samplejava.edu08-prd.20.249.203.31.nip.io
+  - host: {{ cookiecutter.argocd_ip }}
     http:
       paths:
       - path: /
         backend:
           service:
-            name: samplejava-svc
+            name: {{ cookiecutter.image_name }}-svc
             port:
               number: 80
         pathType: Prefix

@@ -1,5 +1,9 @@
 {
     "project_name": "example-java-app",
     "package_name": "com.example.app",
-    "acr_name": "ktdsacr"
+    "k8s_namespace" : "sample-namespace",
+    "argocd_ip" : "127.0.0.1",
+    "acr_name": "ktds-acr",
+    "repository_name" : "sample-repository",
+    "image_name" : "sample-image"
 }

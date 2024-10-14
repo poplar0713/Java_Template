@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ cookiecutter.project_name }}-ingress
+  name: {{ cookiecutter.image_name }}-ingress
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ cookkiecutter.argocd_ip }}
+  - host: {{ cookiecutter.argocd_ip }}
     http:
       paths:
       - path: /
         backend:
           service:
-            name: {{ cookiecutter.project_name }}-svc
+            name: {{ cookiecutter.image_name }}-svc
             port:
               number: 80
         pathType: Prefix
