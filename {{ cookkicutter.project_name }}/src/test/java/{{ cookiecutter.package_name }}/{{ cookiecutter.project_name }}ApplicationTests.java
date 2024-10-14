@@ -1,10 +1,10 @@
-package com.ssongman.demo;
+package {{ cookiecutter.package_name }};
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class {{ cookkiecutter.project_name }}Tests {
+class {{ cookiecutter.project_name }}Tests {
 
 	@Test
 	void contextLoads() {

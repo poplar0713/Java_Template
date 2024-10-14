@@ -1,4 +1,4 @@
-package com.ssongman.demo.controller;
+package {{ cookiecutter.package_name }}.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
