@@ -3,6 +3,7 @@
     "package_name": "com.example.app",
     "k8s_namespace" : "sample-namespace",
     "argocd_ip" : "127.0.0.1",
+    "argocd_port": "8080",
     "acr_name": "ktds-acr",
     "repository_name" : "sample-repository",
     "image_name" : "sample-image"
