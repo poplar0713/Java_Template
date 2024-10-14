@@ -39,7 +39,7 @@ jobs:
               <server>
               <id>github</id>
               <username>${{ github.actor }}</username>
-              <password>${{ secrets.GH_ADMIN_TOKEN }}</password>
+              <password>${{ secrets.ACCESS_TOKEN }}</password>
               </server>
           </servers>
           </settings>

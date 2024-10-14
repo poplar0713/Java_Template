@@ -19,7 +19,7 @@ jobs:
     runs-on: ${{ vars.AKS_NAME }}  # AKS NAME
 
     env:
-      IMAGE_NAME: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.PACKAGE_NAME }}//${{ vars.PROJECT_NAME }}
+      IMAGE_NAME: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.REPOSITORY_NAME }}//${{ vars.PROJECT_NAME }}
 
     permissions:
       contents: write
@@ -59,7 +59,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          images: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.PACKAGE_NAME }}//${{ vars.PROJECT_NAME }}
+          images: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.REPOSITORY_NAME }}//${{ vars.PROJECT_NAME }}
 
       - name: Build and push Docker image
         id: build-and-push
