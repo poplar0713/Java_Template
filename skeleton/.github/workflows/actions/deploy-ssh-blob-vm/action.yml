@@ -35,6 +35,9 @@ runs:
       run: |
         echo "${{ inputs.ssh-private-key }}" > ssh_key.pem
         chmod 600 ssh_key.pem
+        mkdir -p ~/.ssh
+        ssh-keyscan -H ${{ inputs.vm-ip }} >> ~/.ssh/known_hosts
+      shell: bash
 
     - name: Download application JAR from Azure Blob
       id: download-blob
