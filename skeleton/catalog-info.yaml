@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: {{ cookiecutter.project_name }}
+  description: {{ cookiecutter.description }}
+  annotations:
+    github.com/project-slug: poplar0713/{{ cookiecutter.project_name }}
+    backstage.io/kubernetes-id: {{ cookiecutter.project_name }}
+    argocd/proxy-url: '/argocd/api'
+    argocd/app-name: {{ cookiecutter.project_name }}
+    jira/project-key: 'KAN'
+    azure-container-registry/repository-name: {{ cookiecutter.repository_name }}
+    
+spec:
+  type: service
+  lifecycle: production
+  owner: {{ cookiecutter.owner }}
