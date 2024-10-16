@@ -1,0 +1,70 @@
+name: Build and upload JAR to Blob
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        required: true
+        type: choice
+        options:
+          - ubuntu-latest
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - prd
+
+jobs:
+  build:
+    name: (${{ inputs.environment }}) Build using maven
+    runs-on: "${{ inputs.runner }}"
+
+    steps:
+    - name: Check out the repo
+      uses: actions/checkout@v4.1.7
+      with:
+        fetch-depth: 1
+
+    - name: Configure maven settings.xml
+      run: |
+          cat <<EOF > ./settings.xml
+          <settings>
+          <servers>
+              <server>
+              <id>github</id>
+              <username>${{ github.actor }}</username>
+              <password>${{ secrets.ACCESS_TOKEN }}</password>
+              </server>
+          </servers>
+          </settings>
+          EOF
+
+    - name: Package artifact file
+      run: mvn -B -DskipTests package --file ./pom.xml -s ./settings.xml
+
+    - name: Log in to Azure CLI
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_COMMON }}
+      run: |
+        echo "$AZURE_CREDENTIALS" > azure_credentials.json
+        az login \
+          --service-principal \
+          --username $(jq -r .clientId azure_credentials.json) \
+          -p=$(jq -r .clientSecret azure_credentials.json) \
+          --tenant $(jq -r .tenantId azure_credentials.json)
+        az account set --subscription $(jq -r .subscriptionId azure_credentials.json)
+      shell: bash
+
+    - name: Upload jar file to Object Storage
+      run: |
+        az storage blob upload \
+          --account-name ${{ vars.AZURE_COMMON_STORAGE_ACCOUNT }} \
+          --container-name ${{ vars.AZURE_COMMON_ARTIFACT_CONTAINER }} \
+          --file ./target/*.jar \
+          --name ${{ vars.APP_NAME }}.jar \
+          --overwrite \
+          --auth-mode login
+      shell: bash

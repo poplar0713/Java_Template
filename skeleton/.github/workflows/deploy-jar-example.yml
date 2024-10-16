@@ -1,0 +1,89 @@
+name: Deploy JAR from Blob to VM
+
+on:
+  workflow_dispatch:
+    inputs:
+      runner:
+        required: true
+        type: choice
+        options:
+          - ubuntu-latest
+      environment:
+        description: "Deployment environment"
+        required: true
+        default: "dev"
+        type: choice
+        options:
+          - dev
+          - prd
+
+jobs:
+  deploy-dev:
+    name: (${{ inputs.environment }}) Deploy using ssh and blob
+    runs-on: "${{ inputs.runner }}"
+    steps:
+      - name: Log in to Azure CLI
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_COMMON }}
+        run: |
+          echo "$AZURE_CREDENTIALS" > azure_credentials.json
+          az login \
+            --service-principal \
+            --username $(jq -r .clientId azure_credentials.json) \
+            -p=$(jq -r .clientSecret azure_credentials.json) \
+            --tenant $(jq -r .tenantId azure_credentials.json)
+          az account set --subscription $(jq -r .subscriptionId azure_credentials.json)
+        shell: bash
+
+      - name: Deploy java app to dev environment
+        uses: ./.github/workflows/actions/deploy-ssh-blob-vm
+        with:
+          environment: "${{ inputs.environment }}"
+          storage-account: "${{ vars.AZURE_COMMON_STORAGE_ACCOUNT }}"
+          storage-container: "${{ vars.AZURE_COMMON_ARTIFACT_CONTAINER }}"
+          storage-access-key: "${{ secrets.AZURE_COMMON_STORAGE_ACCESS_KEY }}"
+          ssh-private-key: "${{ secrets.AZURE_VM_SSH_PRIVATE_KEY_DEV }}"
+          vm-prefix: "${{ vars.AZURE_VM_PREFIX }}"
+          vm-suffix: "vm"
+          vm-ip: "${{ secrets.AZURE_VM_IP_DEV }}"
+          vm-user: "${{ vars.AZURE_VM_USER }}"
+          app-name: "${{ vars.APP_NAME }}"
+
+  deploy-prd:
+    name: (${{ inputs.environment }}) Deploy using ssh and blob
+    runs-on: "${{ inputs.runner }}"
+    strategy:
+      matrix:
+        vm-ips: [prd1, prd2]
+    steps:
+      - name: Log in to Azure CLI
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_COMMON }}
+        run: |
+          echo "$AZURE_CREDENTIALS" > azure_credentials.json
+          az login \
+            --service-principal \
+            --username $(jq -r .clientId azure_credentials.json) \
+            -p=$(jq -r .clientSecret azure_credentials.json) \
+            --tenant $(jq -r .tenantId azure_credentials.json)
+          az account set --subscription $(jq -r .subscriptionId azure_credentials.json)
+        shell: bash
+
+      - name: Extract VM IP
+        run: echo "TARGET_VM_IP=$(echo '${{ secrets.AZURE_VM_IP_PRD }}' | jq -r .${{ matrix.vm-ips }} )" >> $GITHUB_ENV
+
+      - name: Deploy java app to production
+        uses: ./.github/workflows/actions/deploy-ssh-blob-vm
+        env:
+          TARGET_VM_IP: ${{ env.TARGET_VM_IP }}
+        with:
+          environment: "${{ inputs.environment }}"
+          storage-account: "${{ vars.AZURE_COMMON_STORAGE_ACCOUNT }}"
+          storage-container: "${{ vars.AZURE_COMMON_ARTIFACT_CONTAINER }}"
+          storage-access-key: "${{ secrets.AZURE_COMMON_STORAGE_ACCESS_KEY }}"
+          ssh-private-key: "${{ secrets.AZURE_VM_SSH_PRIVATE_KEY_PRD }}"
+          vm-prefix: "${{ vars.AZURE_VM_PREFIX }}"
+          vm-suffix: "vm"
+          vm-ip: "${{ env.TARGET_VM_IP }}"
+          vm-user: "${{ vars.AZURE_VM_USER }}"
+          app-name: "${{ vars.APP_NAME }}"
