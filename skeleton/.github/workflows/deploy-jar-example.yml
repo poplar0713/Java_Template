@@ -1,4 +1,4 @@
-name: Deploy JAR from Blob to VM
+name: Deploy VM using SSH and Blob
 
 on:
   workflow_dispatch:
@@ -19,9 +19,13 @@ on:
 
 jobs:
   deploy-dev:
-    name: (${{ inputs.environment }}) Deploy using ssh and blob
+    name: Deploy to dev VM using ssh and blob
     runs-on: "${{ inputs.runner }}"
+    if: ${{ inputs.environment == 'dev' }}
     steps:
+      - name: Check out the repository    # 리포지토리 체크아웃
+        uses: actions/checkout@v4
+
       - name: Log in to Azure CLI
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_COMMON }}
@@ -43,19 +47,21 @@ jobs:
           storage-container: "${{ vars.AZURE_COMMON_ARTIFACT_CONTAINER }}"
           storage-access-key: "${{ secrets.AZURE_COMMON_STORAGE_ACCESS_KEY }}"
           ssh-private-key: "${{ secrets.AZURE_VM_SSH_PRIVATE_KEY_DEV }}"
-          vm-prefix: "${{ vars.AZURE_VM_PREFIX }}"
-          vm-suffix: "vm"
           vm-ip: "${{ secrets.AZURE_VM_IP_DEV }}"
           vm-user: "${{ vars.AZURE_VM_USER }}"
           app-name: "${{ vars.APP_NAME }}"
 
   deploy-prd:
-    name: (${{ inputs.environment }}) Deploy using ssh and blob
+    name: Deploy to production VMs using ssh and blob
     runs-on: "${{ inputs.runner }}"
+    if: ${{ inputs.environment == 'prd' }}
     strategy:
       matrix:
         vm-ips: [prd1, prd2]
     steps:
+      - name: Check out the repository    # 리포지토리 체크아웃
+        uses: actions/checkout@v4
+
       - name: Log in to Azure CLI
         env:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_COMMON }}
@@ -82,8 +88,6 @@ jobs:
           storage-container: "${{ vars.AZURE_COMMON_ARTIFACT_CONTAINER }}"
           storage-access-key: "${{ secrets.AZURE_COMMON_STORAGE_ACCESS_KEY }}"
           ssh-private-key: "${{ secrets.AZURE_VM_SSH_PRIVATE_KEY_PRD }}"
-          vm-prefix: "${{ vars.AZURE_VM_PREFIX }}"
-          vm-suffix: "vm"
           vm-ip: "${{ env.TARGET_VM_IP }}"
           vm-user: "${{ vars.AZURE_VM_USER }}"
           app-name: "${{ vars.APP_NAME }}"
