@@ -25,7 +25,7 @@ jobs:
         with:
           login-server: ${{ secrets.ACR_NAME }}.azurecr.io
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DC_PASSWORD }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v2
@@ -52,12 +52,12 @@ jobs:
       - name: Create or Update ArgoCD Application
         run: |
           if [ "${{ env.app_exists }}" = "true" ]; then
-            argocd app set ${{ secrets.ARGOCD_APP_NAME }} \
+            argocd app set ${{ vars.ARGOCD_APP_NAME }} \
               --repo https://github.com/${{ github.repository }} \
               --path manifests/overlays/${{ github.event.inputs.environment }} \
               --sync-policy automated
           else
-            argocd app create ${{ secrets.ARGOCD_APP_NAME }} \
+            argocd app create ${{ vars.ARGOCD_APP_NAME }} \
               --repo https://github.com/${{ github.repository }} \
               --path manifests/overlays/${{ github.event.inputs.environment }} \
               --dest-server https://kubernetes.default.svc \
@@ -67,4 +67,4 @@ jobs:
 
       - name: ArgoCD Sync Application
         run: |
-          argocd app sync ${{ secrets.ARGOCD_APP_NAME }}
+          argocd app sync ${{ vars.ARGOCD_APP_NAME }}
