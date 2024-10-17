@@ -56,12 +56,13 @@ jobs:
               --repo https://github.com/${{ github.repository }} \
               --path manifests/overlays/${{ github.event.inputs.environment }} \
               --sync-policy automated
+              --dest-namespace ${{ vars.K8S_NAMESPACE }}
           else
             argocd app create ${{ vars.ARGOCD_APP_NAME }} \
               --repo https://github.com/${{ github.repository }} \
               --path manifests/overlays/${{ github.event.inputs.environment }} \
               --dest-server https://kubernetes.default.svc \
-              --dest-namespace default \
+              --dest-namespace ${{ vars.K8S_NAMESPACE }}  \
               --sync-policy automated
           fi
 
