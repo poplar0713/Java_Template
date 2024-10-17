@@ -11,10 +11,11 @@ spec:
     metadata:
       labels:
         app: {{ cookiecutter.image_name }}
+        backstage.io/kubernetes-id: {{ cookiecutter.project_name }}
     spec:
       containers:
         - name: {{ cookiecutter.image_name }}
-          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.reposiroty_name }}/{{ cookiecutter.image_name }}:v1.0.0
+          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.reposiroty_name }}/{{ cookiecutter.image_name }}-dev
           ports:
             - containerPort: 8080
           resources:

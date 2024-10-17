@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         app: {{ cookiecutter.image_name }}
+        backstage.io/kubernetes-id: {{ cookiecutter.project_name }}
     spec:
       containers:
         - name: {{ cookiecutter.image_name }}
