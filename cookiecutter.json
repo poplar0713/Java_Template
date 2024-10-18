@@ -6,5 +6,6 @@
     "argocd_port": "8080",
     "acr_name": "ktds-acr",
     "repository_name" : "sample-repository",
-    "image_name" : "sample-image"
+    "image_name" : "sample-image",
+    "argocd_app_name": "sample-argocd_app_name"
 }
