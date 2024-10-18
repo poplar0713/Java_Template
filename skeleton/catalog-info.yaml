@@ -4,7 +4,7 @@ metadata:
   name: {{ cookiecutter.project_name }}
   description: {{ cookiecutter.description }}
   annotations:
-    github.com/project-slug: poplar0713/{{ cookiecutter.project_name }}
+    github.com/project-slug: poplar0713/{{ cookiecutter.github_repo_name }}
     backstage.io/kubernetes-id: {{ cookiecutter.project_name }}
     argocd/proxy-url: '/argocd/api'
     argocd/app-name: {{ cookiecutter.argocd_app_name }}
@@ -12,6 +12,6 @@ metadata:
     azure-container-registry/repository-name: {{ cookiecutter.repository_name }}
     
 spec:
-  type: {{ values.type }}
-  lifecycle: {{ valuse.lifecycle }}
-  owner: {{ values.owner }}
+  type: service
+  lifecycle: experimental
+  owner: {{ cookiecutter.owner }}

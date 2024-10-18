@@ -1,6 +1,7 @@
 {
     "project_name": "example-java-app",
     "package_name": "com.example.app",
+    "github_repo_name": "example",
     "k8s_namespace" : "sample-namespace",
     "argocd_ip" : "127.0.0.1",
     "argocd_port": "8080",
