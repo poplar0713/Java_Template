@@ -1,4 +1,4 @@
-name: Deploy to Kubernetes via ArgoCD with Kustomize
+name: Deploy to ArgoCD with ACR docker Image
 
 on:
   workflow_dispatch:
