@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: {{ cookiecutter.image_name }}
-          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.repository_name }}/{{ cookiecutter.image_name }}-prd
+          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.image_name }}-prd
           resources:
             limits:
               memory: "512Mi"

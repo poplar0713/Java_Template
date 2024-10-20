@@ -16,7 +16,7 @@ on:
           - prd
 
 env:
-  IMAGE_NAME: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.REPOSITORY_NAME }}/${{ vars.IMAGE_NAME }}
+  IMAGE_NAME: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.IMAGE_NAME }}
 
 jobs:
   build-and-push:
@@ -54,6 +54,6 @@ jobs:
         context: .
         push: true
         tags: |
-          ${{ env.IMAGE_NAME }}:${{ github.event.inputs.TagVersion }}-${{ github.event.inputs.environment }}
+          ${{ env.IMAGE_NAME }}-${{ github.event.inputs.environment }}:${{ github.event.inputs.TagVersion }}
           ${{ env.IMAGE_NAME }}:latest
         labels: ${{ steps.meta.outputs.labels }}

@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: {{ cookiecutter.image_name }}
-          image: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.repository_name }}/{{ cookiecutter.image_name }}:v1.0.0
+          image: {{ cookiecutter.acr_name }}.azurecr.io/{ cookiecutter.image_name }}:v1.0.0
           ports:
           - containerPort: 8080
