@@ -53,7 +53,7 @@ jobs:
 
     - name: Log in to Azure CLI
       env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS_COMMON }}
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
       run: |
         echo "$AZURE_CREDENTIALS" > azure_credentials.json
         az login \
@@ -67,8 +67,8 @@ jobs:
     - name: Upload jar file to Object Storage
       run: |
         az storage blob upload \
-          --account-name ${{ vars.AZURE_COMMON_STORAGE_ACCOUNT }} \
-          --container-name ${{ vars.AZURE_COMMON_ARTIFACT_CONTAINER }} \
+          --account-name ${{ vars.AZURE_STORAGE_ACCOUNT }} \
+          --container-name ${{ vars.AZURE_ARTIFACT_CONTAINER }} \
           --file ./target/*.jar \
           --name ${{ vars.APP_NAME }}.jar \
           --overwrite \

@@ -45,10 +45,9 @@ jobs:
           AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
         run: |
           echo "$AZURE_CREDENTIALS" > azure_credentials.json
-          az login \
-            --service-principal \
+          az login --service-principal \
             --username $(jq -r .clientId azure_credentials.json) \
-            -p=$(jq -r .clientSecret azure_credentials.json) \
+            --password &(jq -r .clientSecret azure_credentials.json) \
             --tenant $(jq -r .tenantId azure_credentials.json)
           az account set --subscription $(jq -r .subscriptionId azure_credentials.json)
         shell: bash
