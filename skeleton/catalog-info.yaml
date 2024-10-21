@@ -9,7 +9,7 @@ metadata:
     argocd/proxy-url: '/argocd/api'
     argocd/app-name: {{ cookiecutter.argocd_app_name }}
     jira/project-key: 'KAN'
-    azure-container-registry/repository-name: {{ cookiecutter.repository_name }}
+    azure-container-registry/repository-name: {{ cookiecutter.image_name }}
     
 spec:
   type: service
