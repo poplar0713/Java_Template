@@ -10,6 +10,7 @@ metadata:
     argocd/app-name: {{ cookiecutter.argocd_app_name }}
     jira/project-key: 'KAN'
     azure-container-registry/repository-name: {{ cookiecutter.image_name }}
+    backstage.io/techdocs-ref: dir:.
     
 spec:
   type: service

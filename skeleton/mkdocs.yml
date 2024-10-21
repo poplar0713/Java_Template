@@ -1,0 +1,14 @@
+site_name: {{ cookiecutter.project_name }}
+nav:
+  - Home: index.md
+  - Download Example: examples/download.md
+  - Iframe Example: examples/iframe.md
+  - Lists Example: examples/lists.md
+  - Mermaid Example: examples/mermaid.md
+  - Plugin Example: examples/plugin.md
+  - Product Example: examples/product.md
+docs_dir: backstage/docs
+plugins:
+  - techdocs-core
+markdown_extensions:
+  - admonition  # 추가할 Markdown 확장
