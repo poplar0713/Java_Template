@@ -17,4 +17,4 @@ patches:
 images:
 - name: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.image_name }}
   newName: {{ cookiecutter.acr_name }}.azurecr.io/{{ cookiecutter.image_name }}
-  newTag: v2.1.2
+  newTag: 1.0.0
