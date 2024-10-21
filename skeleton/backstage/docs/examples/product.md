@@ -1,4 +1,4 @@
-# Porduct
+# Product
 
 ## Overview
 ### Can we call Backstage something different? So that it fits our company better?
