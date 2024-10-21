@@ -47,10 +47,17 @@ jobs:
         run: |
           argocd login ${{ secrets.ARGOCD_IP }} --username ${{ secrets.ARGOCD_ID }} --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
 
+      - name: Create ArgoCD secret for ACR
+        run: |
+          kubectl create secret docker-registry acr-credentials \
+          --docker-server ${{ vars.ACR_NAME }}.azurecr.io \
+          --docker-username ${{ vars.DOCKER_USERNAME }} \
+          --docker-password ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Check if ArgoCD app exists
         id: check_app
         run: |
-          if argocd app get ${{ secrets.ARGOCD_IP }}; then
+          if argocd app get ${{ vars.ARGOCD_APP_NAME }}; then
             echo "app_exists=true" >> $GITHUB_ENV
           else
             echo "app_exists=false" >> $GITHUB_ENV

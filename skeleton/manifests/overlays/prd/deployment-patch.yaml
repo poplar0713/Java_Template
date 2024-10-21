@@ -30,3 +30,5 @@ spec:
                 port: 8080
                 scheme: HTTP
             initialDelaySeconds: 20
+      imagePullSecrets:
+        - name: acr-credentials
