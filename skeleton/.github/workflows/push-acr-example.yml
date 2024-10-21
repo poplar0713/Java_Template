@@ -3,9 +3,6 @@ name: Build and Push Docker Image to ACR
 on:
   workflow_dispatch:
     inputs:
-      TagVersion:
-        description: 'Tag version for the Docker image'
-        required: true
       environment:
         description: "Deployment environment"
         required: true
@@ -14,6 +11,10 @@ on:
         options:
           - dev
           - prd
+      TagVersion:
+        description: 'Tag version for the Docker image'
+        required: true
+        default: '1.0.0'
 
 env:
   IMAGE_NAME: ${{ vars.ACR_NAME }}.azurecr.io/${{ vars.IMAGE_NAME }}

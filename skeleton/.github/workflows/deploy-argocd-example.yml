@@ -11,6 +11,10 @@ on:
         options:
           - dev
           - prd
+      TagVersion:
+        description: 'Docker image tag'
+        required: true
+        default: '1.0.0'
 
 jobs:
   deploy:
@@ -20,22 +24,38 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Log in to Azure Container Registry
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
-        with:
-          registry: ${{ vars.ACR_NAME }}.azurecr.io
-          username: ${{ vars.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Set up kubectl
         uses: azure/setup-kubectl@v1
         with:
           version: 'v1.26.0'
 
+      - name: Install kubelogin
+        run: |
+          sudo az aks install-cli
+          sudo curl -L https://github.com/Azure/kubelogin/releases/download/v0.0.25/kubelogin-linux-amd64.zip -o kubelogin.zip
+          sudo unzip kubelogin.zip -d /usr/local/bin
+
       - name: Install Kustomize
         run: |
           curl -s "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
           sudo mv kustomize /usr/local/bin
+
+      - name: Log in to Azure CLI
+        env:
+          AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+        run: |
+          echo "$AZURE_CREDENTIALS" > azure_credentials.json
+          az login \
+            --service-principal \
+            --username $(jq -r .clientId azure_credentials.json) \
+            -p=$(jq -r .clientSecret azure_credentials.json) \
+            --tenant $(jq -r .tenantId azure_credentials.json)
+          az account set --subscription $(jq -r .subscriptionId azure_credentials.json)
+        shell: bash
+
+      - name: Get AKS credentials
+        run: | 
+          az aks get-credentials --resource-group rg-demo --name aks-idp-demo --overwrite-existing
 
       - name: Install ArgoCD CLI
         run: |
@@ -47,12 +67,22 @@ jobs:
         run: |
           argocd login ${{ secrets.ARGOCD_IP }} --username ${{ secrets.ARGOCD_ID }} --password ${{ secrets.ARGOCD_PASSWORD }} --insecure
 
+      - name: Update image tag in Kustomize
+        run: |
+          cd manifests/overlays/${{ github.event.inputs.environment }}
+          kustomize edit set image ktdsacr.azurecr.io/samplejava-${{ github.event.inputs.environment }}:${{ github.event.inputs.TagVersion }}
+
       - name: Create ArgoCD secret for ACR
         run: |
-          kubectl create secret docker-registry acr-credentials \
-          --docker-server ${{ vars.ACR_NAME }}.azurecr.io \
-          --docker-username ${{ vars.DOCKER_USERNAME }} \
-          --docker-password ${{ secrets.DOCKER_PASSWORD }}
+          if ! kubectl get secret acr-credentials --namespace ${{ vars.K8S_NAMESPACE }}; then
+            kubectl create secret docker-registry acr-credentials \
+              --docker-server ${{ vars.ACR_NAME }}.azurecr.io \
+              --docker-username ${{ vars.DOCKER_USERNAME }} \
+              --docker-password ${{ secrets.DOCKER_PASSWORD }} \
+              --namespace ${{ vars.K8S_NAMESPACE }}
+          else
+            echo "Secret acr-credentials already exists, skipping creation."
+          fi
 
       - name: Check if ArgoCD app exists
         id: check_app
